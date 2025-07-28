@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package mapreduce;
+
+service MapService {
+	rpc Map(stream Line) returns (stream WordCount);
+}
+
+service ShuffleService {
+	rpc Shuffle(stream WordCount) returns (stream WordCount);
+}
+
+service ReduceService {
+	rpc Reduce(stream WordCount) returns (stream WordCount);
+}
+
+message Line {string text = 1;}
+message WordCount {string word = 1; int32 count = 2;}

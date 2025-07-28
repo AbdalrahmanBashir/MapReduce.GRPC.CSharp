@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  mapworker:
+    build:
+      context: .
+      dockerfile: ./MapReduce.GRPC.CSharp.MapWorker/Dockerfile
+    ports:
+      - "5001:5001"
+
+  shuffleworker:
+    build:
+      context: .
+      dockerfile: ./MapReduce.GRPC.CSharp.ShuffleWorker/Dockerfile
+    ports:
+      - "5002:5002"
+
+  reduceworker:
+    build:
+      context: .
+      dockerfile: ./MapReduce.GRPC.CSharp.ReduceWorker/Dockerfile
+    ports:
+      - "5003:5003"
+
+  master:
+    build:
+      context: .
+      dockerfile: ./MapReduce.GRPC.CSharp.Master/Dockerfile
+    container_name: master
+    ports:
+      - "5075:5075"
+    environment:
+      - MAPWORKER_ADDR=http://mapworker:5001
+      - SHUFFLEWORKER_ADDR=http://shuffleworker:5002
+      - REDUCEWORKER_ADDR=http://reduceworker:5003
+    depends_on:
+      - mapworker
+      - shuffleworker
+      - reduceworker
